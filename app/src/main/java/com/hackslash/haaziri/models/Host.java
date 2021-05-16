@@ -29,7 +29,7 @@ public class Host {
     
     
     public String getUld(){
-        return Uld;
+        return uld;
     }
 
     public void setName(String newName){ name = newName; }
