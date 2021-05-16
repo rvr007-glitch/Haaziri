@@ -26,6 +26,11 @@ public class Host {
     public String getPhone(){
         return phone;
     }
+    
+    
+    public String getUld(){
+        return Uld;
+    }
 
     public void setName(String newName){ name = newName; }
 
@@ -36,4 +41,6 @@ public class Host {
     public void setPhone(String newPhone){
         phone = newPhone;
     }
+    
+    public void setUid(String newUld){ uld = newUld; }
 }
