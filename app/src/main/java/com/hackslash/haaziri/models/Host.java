@@ -9,10 +9,10 @@ public class Host {
     public Host() {
     }
 
-    public Host(String a,String b,String c){
-        a = "";
-        b = "";
-        c = "";
+    public Host(String newName,String newEmail,String newPhone){
+        name = newName;
+        email = newEmail;
+        phone = newPhone;
     }
 
     public String getName(){
