@@ -42,5 +42,5 @@ public class Host {
         phone = newPhone;
     }
     
-    public void setUid(String newUld){ uld = newUld; }
+    public void setUld(String newUld){ uld = newUld; }
 }
