@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "717164368560",
+    "project_id": "haaziri-e9c98",
+    "storage_bucket": "haaziri-e9c98.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717164368560:android:ff62017877b246e62b6175",
+        "android_client_info": {
+          "package_name": "com.hackslash.haaziri"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717164368560-ouoq45kosenhjak9drml7i7da09s65no.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3BWxKOb_d5ZSLj4GRqjTySdnxDQhPHcw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717164368560-ouoq45kosenhjak9drml7i7da09s65no.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
