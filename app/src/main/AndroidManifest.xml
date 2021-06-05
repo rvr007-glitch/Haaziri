@@ -21,7 +21,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".onboarding.SignUpActivity" />
+        <activity android:name=".onboarding.SignUpActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+
         <activity android:name=".onboarding.LoginActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
