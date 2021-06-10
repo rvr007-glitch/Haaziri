@@ -10,8 +10,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.hackslash.haaziri.R;
 import com.hackslash.haaziri.onboarding.LoginActivity;
 
@@ -19,8 +22,12 @@ public class ProfileActivity extends AppCompatActivity {
 
     private Context mContext = this;
 
+
     LinearLayout logoutBtn;
     ImageView backBtn;
+   TextView tname=(TextView)findViewById(R.id.textView);
+   TextView temail=(TextView)findViewById(R.id.editTextNumber3);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +40,14 @@ public class ProfileActivity extends AppCompatActivity {
 
         initVars();
         setupListeners();
+        FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
+        if(user!=null) {
+            String name = user.getDisplayName();
+            String email = user.getEmail();
+            tname.setText(name);
+            temail.setText(email);
+        }
+
     }
 
     private void setupListeners() {
