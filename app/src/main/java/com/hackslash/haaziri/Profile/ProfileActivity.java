@@ -25,8 +25,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     LinearLayout logoutBtn;
     ImageView backBtn;
-   TextView tname=(TextView)findViewById(R.id.textView);
-   TextView temail=(TextView)findViewById(R.id.editTextNumber3);
+    //don't initialize your views here, initialize it in initVars function
+   TextView tname;
+   TextView temail;
+   private FirebaseAuth mAuth;
 
 
     @Override
@@ -40,16 +42,23 @@ public class ProfileActivity extends AppCompatActivity {
 
         initVars();
         setupListeners();
-        FirebaseUser user= FirebaseAuth.getInstance().getCurrentUser();
+        //separating UI creation to another function for more cleaner code and easy debugging
+        updateUI();
+
+    }
+
+    private void updateUI() {
+        FirebaseUser user= mAuth.getCurrentUser();
         if(user!=null) {
-            String name = user.getDisplayName();
+            String name = (user.getDisplayName() != null ?user.getDisplayName():"Test User");
             String email = user.getEmail();
             tname.setText(name);
             temail.setText(email);
         }
-
     }
 
+    //function for setting the click listeners for required views
+    //called single time from onCreate method
     private void setupListeners() {
         backBtn.setOnClickListener(v -> finish());
 
@@ -59,17 +68,25 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    //function for logging user out
     private void logoutUser() {
+        /*directly calling sign out to Firebase auth instance
+        which would sign out the current logged user from device*/
+        mAuth.signOut();
         //starting login activity and finishing all previous activities for security purposes.
         Toast.makeText(mContext, "Logged out", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(mContext, LoginActivity.class));
         finishAffinity();
     }
 
+    //function to initialize all the view, called from onCreate method
     private void initVars() {
         logoutBtn = findViewById(R.id.logout_btn);
         //getting toolbar to get the back button
         Toolbar toolbar = findViewById(R.id.toolbar);
         backBtn = toolbar.findViewById(R.id.backBtn);
+        mAuth = FirebaseAuth.getInstance();
+        tname = findViewById(R.id.nameTv);
+        temail = findViewById(R.id.emailTv);
     }
 }

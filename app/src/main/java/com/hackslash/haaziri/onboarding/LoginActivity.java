@@ -105,13 +105,18 @@ public class LoginActivity extends AppCompatActivity {
                             //checking the user verify his/her email or not
                             final FirebaseUser user =firebaseAuth.getCurrentUser();
                             if(user.isEmailVerified()){
-                                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                                startActivity(new Intent(mContext, ProfileActivity.class));
+                                finish();
                             }
                             if(!user.isEmailVerified()){
+                                dialog.setTitle("Sending Verification Email");
+                                dialog.setMessage("Your email is not verified, we are resending you verification email");
+                                dialog.showDialog();
                                 user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        Toast.makeText(LoginActivity.this, " Verify your Email first",Toast.LENGTH_SHORT).show();
+                                        dialog.hideDialog();
+                                        Toast.makeText(LoginActivity.this, "Verify your email from the sent email",Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }
