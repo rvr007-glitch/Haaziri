@@ -53,70 +53,70 @@ public class LoginActivity extends AppCompatActivity {
         //function to setup listeners, should be present in all activities
         setupListeners();
 
-        //creating login system and firebase authentication
-        loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email = emailTxt.getText().toString().trim();
-                String password = passwordTxt.getText().toString().trim();
-
-
-                //tost message for email and password
-                if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(LoginActivity.this, "Please Enter Email", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(LoginActivity.this, "Please Enter Password", Toast.LENGTH_SHORT).show();
-                    return;
-
-                }
-
-
-                firebaseAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    //checking the user verify his/her email or not
-                                  final FirebaseUser user =firebaseAuth.getCurrentUser();
-                                    if(user.isEmailVerified()){
-                                        startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
-                                    }
-                                    if(!user.isEmailVerified()){
-                                        user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Toast.makeText(LoginActivity.this, " Verify your Email first",Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                    }
-
-                                } else {
-
-                                    Toast.makeText(LoginActivity.this, " Login Failed or User Not Regester", Toast.LENGTH_SHORT).show();
-
-                                }
-
-                            }
-                        });
-
-            }
-        });
     }
 
 
 
     private void setupListeners() {
-        /* loginBtn.setOnClickListener(v -> {
-           Toast.makeText(this, "Login button clicked", Toast.LENGTH_SHORT).show();
-       }); */
+        //creating login system and firebase authentication
+         loginBtn.setOnClickListener(v -> {
+             String email = emailTxt.getText().toString().trim();
+             String password = passwordTxt.getText().toString().trim();
+
+
+             //checking if email password are filled or empty
+             if (TextUtils.isEmpty(email)) {
+                 //setting empty email error to the email edit text field
+                 emailTxt.setError("Please enter an email");
+                 return;
+             }
+             if (TextUtils.isEmpty(password)) {
+                 //setting empty password error to the password edit text field
+                 passwordTxt.setError("Please enter a password first");
+                 return;
+
+             }
+
+
+             loginUser(email, password);
+       });
         forgotPasswordBtn.setOnClickListener(v -> {
           Toast.makeText(this, "forgot password clicked", Toast.LENGTH_SHORT).show();
        });
        createOneBtn.setOnClickListener(v -> {
            sendToRegisterActivity();
       });
+    }
+
+    private void loginUser(String email, String password){
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            //checking the user verify his/her email or not
+                            final FirebaseUser user =firebaseAuth.getCurrentUser();
+                            if(user.isEmailVerified()){
+                                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                            }
+                            if(!user.isEmailVerified()){
+                                user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(LoginActivity.this, " Verify your Email first",Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+
+                        } else {
+
+                            Toast.makeText(LoginActivity.this, " Login Failed or User doesn't exists", Toast.LENGTH_SHORT).show();
+
+                        }
+
+                    }
+                });
+
     }
 
     private void sendToRegisterActivity() {
