@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    app:cardCornerRadius="16dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        >
+
+        <TextView
+            android:id="@+id/progressDialogTitleTextView"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="Dialog title"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            />
+
+
+        <TextView
+            android:id="@+id/progressDialogMessageTextView"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="Dialog message"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="5dp"
+            />
+
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+
+            />
+
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

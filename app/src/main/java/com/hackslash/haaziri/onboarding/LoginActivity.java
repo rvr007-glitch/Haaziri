@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.hackslash.haaziri.Profile.ProfileActivity;
 import com.hackslash.haaziri.R;
+import com.hackslash.haaziri.activitydialog.ActivityDialog;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -34,6 +35,8 @@ public class LoginActivity extends AppCompatActivity {
     TextView createOneBtn;
     EditText emailTxt, passwordTxt;
     private FirebaseAuth firebaseAuth;
+    //an custom activity dialog to show user progress for its activities
+    private ActivityDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,10 +92,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser(String email, String password){
+        dialog.setTitle("Logging You in");
+        dialog.setMessage("Please wait while we log you in");
+        dialog.setCancelable(false);
+        dialog.showDialog();
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        dialog.hideDialog();
                         if (task.isSuccessful()) {
                             //checking the user verify his/her email or not
                             final FirebaseUser user =firebaseAuth.getCurrentUser();
@@ -132,5 +140,6 @@ public class LoginActivity extends AppCompatActivity {
         emailTxt = findViewById(R.id.textInputEditTextEmail);
         passwordTxt = findViewById(R.id.textInputEditTextPassword);
         firebaseAuth = FirebaseAuth.getInstance();
+        dialog = new ActivityDialog(mContext);
     }
 }
