@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import com.hackslash.haaziri.MainActivity;
 import com.hackslash.haaziri.Profile.ProfileActivity;
 import com.hackslash.haaziri.R;
+import com.hackslash.haaziri.intro.IntroSliderActivity;
 import com.hackslash.haaziri.onboarding.LoginActivity;
 
 public class SplashActivity extends AppCompatActivity {
@@ -30,7 +31,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 //Intent for start mainActivity
-                Intent splashIntent = new Intent(mContext, LoginActivity.class);
+                Intent splashIntent = new Intent(mContext, IntroSliderActivity.class);
                 startActivity(splashIntent);
                 finish();
             }

@@ -20,38 +20,35 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.hackslash.haaziri.MainActivity;
 import com.hackslash.haaziri.R;
+import com.hackslash.haaziri.onboarding.LoginActivity;
+
+import static androidx.core.content.ContextCompat.getSystemService;
 
 public class IntroSliderActivity extends AppCompatActivity {
 
 
     private ViewPager viewPager;
     private MyViewPagerAdapter myViewPagerAdapter;
-    private LinearLayout dotsLayout;
-    private TextView[] dots;
     private int[] layouts;
-    private Button btnSkip, btnNext;
+    private Button btnNext;
+    private Button btnSkip;
     private PrefManager prefManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Checking for first time launch - before calling setContentView()
+        // Checking for first time app launch - before calling setContentView()
         prefManager = new PrefManager(this);
         if (!prefManager.isFirstTimeLaunch()) {
-            launchHomeScreen();
+            launchLoginScreen();
             finish();
-        }
-
-        // Making notification bar transparent
-        if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         }
 
         setContentView(R.layout.activity_intro_slider);
 
         viewPager = (ViewPager) findViewById(R.id.view_pager);
-        btnSkip = (Button) findViewById(R.id.btn_skip);
+        btnSkip = findViewById(R.id.btn_skip);
         btnNext = (Button) findViewById(R.id.btn_next);
 
 
@@ -62,10 +59,6 @@ public class IntroSliderActivity extends AppCompatActivity {
                 R.layout.getting_started3
         };
 
-        // adding bottom dot
-
-        // making notification bar transparent
-
         myViewPagerAdapter = new MyViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
@@ -73,7 +66,7 @@ public class IntroSliderActivity extends AppCompatActivity {
         btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchHomeScreen();
+                launchLoginScreen();
             }
         });
 
@@ -86,7 +79,7 @@ public class IntroSliderActivity extends AppCompatActivity {
                     // move to next screen
                     viewPager.setCurrentItem(current);
                 } else {
-                    launchHomeScreen();
+                    launchLoginScreen();
                 }
             }
         });
@@ -95,9 +88,9 @@ public class IntroSliderActivity extends AppCompatActivity {
         return viewPager.getCurrentItem() + i;
     }
 
-    private void launchHomeScreen() {
+    private void launchLoginScreen() {
         prefManager.setFirstTimeLaunch(false);
-        startActivity(new Intent(IntroSliderActivity.this, MainActivity.class));
+        startActivity(new Intent(IntroSliderActivity.this, LoginActivity.class));
         finish();
     }
 
@@ -130,10 +123,6 @@ public class IntroSliderActivity extends AppCompatActivity {
         }
     };
 
-    // Making notification bar transparent
-
-
-    }
 
     /**
      * View pager adapter
