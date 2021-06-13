@@ -158,25 +158,7 @@ public class SignUpActivity extends AppCompatActivity {
     private void updateUI(FirebaseUser user) {
 
     }
-    public void password_check()
-    {
-        if(password.length()>6){
-            len=true;
-        }
-        if(password.matches("(.*[A-Z].*)")){
-            hasUppercase=true;
-        }
-        if(password.matches("(.*[0-9].*)")){
-            hasNumber=true;
-        }
-        if(password.matches("^(?=.*[_.()]).*$")){
-            hasSymbol=true;
-        }
-        if(len&& hasSymbol&&hasNumber&&hasUppercase&& email.length()>0){
 
-
-        }
-    }
 
     public void onStart() {
         super.onStart();
