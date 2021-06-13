@@ -9,11 +9,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.WindowManager;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.hackslash.haaziri.MainActivity;
 import com.hackslash.haaziri.Profile.ProfileActivity;
 import com.hackslash.haaziri.R;
+import com.hackslash.haaziri.intro.IntroSliderActivity;
 import com.hackslash.haaziri.onboarding.LoginActivity;
+
+import java.util.function.IntToDoubleFunction;
 
 public class SplashActivity extends AppCompatActivity {
     private final int SPLASH_DISPLAY_TIME = 3000;
@@ -23,14 +28,21 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         //making status bar white only
         getWindow().setStatusBarColor(getResources().getColor(R.color.white));
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 //Intent for start mainActivity
-                Intent splashIntent = new Intent(mContext, LoginActivity.class);
+                Intent splashIntent;
+                //checking if user has logged in previously
+                if(mAuth.getCurrentUser() != null) {
+                    Toast.makeText(mContext, "Already Logged in", Toast.LENGTH_SHORT).show();
+                    splashIntent = new Intent(mContext, ProfileActivity.class);
+                }
+                else
+                    splashIntent = new Intent(mContext, IntroSliderActivity.class);
                 startActivity(splashIntent);
                 finish();
             }
