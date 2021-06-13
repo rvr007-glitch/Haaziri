@@ -20,12 +20,18 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.hackslash.haaziri.Profile.ProfileActivity;
 import com.hackslash.haaziri.R;
+import com.hackslash.haaziri.activitydialog.ActivityDialog;
+import com.hackslash.haaziri.models.UserProfile;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -34,6 +40,9 @@ public class SignUpActivity extends AppCompatActivity {
     EditText nameEdit;
     String email;
     String password;
+    String name;
+    String phone;
+    String confirmPass;
     EditText emailEdit;
     EditText mobileEdit;
     EditText passwordEdit;
@@ -43,8 +52,14 @@ public class SignUpActivity extends AppCompatActivity {
     ImageView backBtn;
     private FirebaseAuth mAuth;
     private static final String TAG = "AnonymousAuth";
-    private boolean len=false,hasUppercase=false,hasNumber=false,hasSymbol=false,isRegistrationClickable=false;
+    private boolean len=false,hasUppercase=false,hasNumber=false,isRegistrationClickable=false;
+    private ActivityDialog dialog;
 
+    //variable the current signed up user reference
+    private FirebaseUser currentUser;
+
+    //variable that stores the root reference of the database
+    private DatabaseReference mRootRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,50 +93,85 @@ public class SignUpActivity extends AppCompatActivity {
         saveBtn.setOnClickListener(v -> {
             //if(email and password pattern matches) ->signUpUser
             //else-> show error toast
+            name = nameEdit.getText().toString();
             email=  emailEdit.getText().toString();
             password=passwordEdit.getText().toString();
+            phone = mobileEdit.getText().toString();
+            confirmPass = confirmPassEdit.getText().toString();
+
+            //checking if user has filled all user fields
+            if(!(checkEntries())) return;
+
             if (password.length() > 6) {
                 len = true;
             }
-            if (password.matches("(.*[A-Z].*)")) {
+            //made changes to support small letter as well in password
+            if (password.matches("(.*[A-Za-z].*)")) {
                 hasUppercase = true;
             }
             if (password.matches("(.*[0-9].*)")) {
                 hasNumber = true;
             }
-            if (password.matches("^(?=.*[_.()]).*$")) {
-                hasSymbol = true;
-            }
-            if (len && hasSymbol && hasNumber && hasUppercase && email.length() > 0) {
+            //removed symbol regex for password since firebase forgot password features does not have this
+            if (len &&  hasNumber && hasUppercase && email.length() > 0) {
 
                 signupUser();
             }
             else{
-                Toast.makeText(mContext, "Invalid input in password or E-mail", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Make sure your password is of length greater than 6 and is a combination of letters and numbers", Toast.LENGTH_LONG).show();
             }
 
         });
         backBtn.setOnClickListener(v -> finish());
     }
 
+    //function to check if user has entered all the details
+    private boolean checkEntries() {
+        if(name.isEmpty()){
+            nameEdit.setError("Please enter your name");
+            return false;
+        }
+        if(email.isEmpty()){
+            emailEdit.setError("Please enter your email");
+            return false;
+        }
+        if(phone.length() != 10){
+            mobileEdit.setError("Please a valid 10 digit mobile no.");
+            return false;
+        }
+        if(password.isEmpty()){
+            passwordEdit.setError("Please enter a password");
+            return false;
+        }
+        if(confirmPass.isEmpty()){
+            confirmPassEdit.setError("Please enter your confirmed password");
+            return false;
+        }
+
+        //checking if password and confirm password match
+        if(!(password.equals(confirmPass))){
+            Toast.makeText(mContext, "Your password and confirmed password doesn't match", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
     private void signupUser() {
+        //using custom progress dialog for better user experience
+        dialog.setTitle("Signing up");
+        dialog.setMessage("Please wait while we sign you up");
+        dialog.setCancelable(false);
+        dialog.showDialog();
         mAuth.createUserWithEmailAndPassword(email, password)
 
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-
+                        dialog.hideDialog();
                         if (task.isSuccessful()) {
-                            mAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull  Task<Void> task) {
-                                    Toast.makeText(SignUpActivity.this, "Please Veriy ur E-mail", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
+                            //saving details to database
+                            currentUser = mAuth.getCurrentUser();
+                            saveDetailsToDb();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -137,6 +187,42 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
+    private void saveDetailsToDb() {
+        dialog.setTitle("Saving your details");
+        dialog.setMessage("Please wait while we save your details");
+        dialog.showDialog();
+        UserProfile profile = new UserProfile(name, email, phone);
+        String userUid = currentUser.getUid();
+        String userProfilePath = "/users/"+userUid+"/profile/";
+        mRootRef.child(userProfilePath).setValue(profile).addOnSuccessListener(unused -> {
+            //sending verification email after successful data saving
+            dialog.hideDialog();
+            sendVerificatonEmail();
+        }).addOnFailureListener(e -> {
+            //showing error for failed data saving
+            dialog.hideDialog();
+            Toast.makeText(mContext, "Unable to proceed", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, e.getMessage());
+        });
+
+    }
+
+    private void sendVerificatonEmail() {
+        dialog.setTitle("Sending verification email");
+        dialog.setMessage("We are sending a verification email to verify that its you.");
+        dialog.showDialog();
+        currentUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull  Task<Void> task) {
+                //signing out user to prevent unintended access after sending verification email
+                mAuth.signOut();
+                dialog.hideDialog();
+                Toast.makeText(SignUpActivity.this, "Please verify your email first from the sent email", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+    }
+
     private void initVars() {
         nameEdit = findViewById(R.id.name_edit);
         emailEdit = findViewById(R.id.email_edit);
@@ -150,6 +236,11 @@ public class SignUpActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         backBtn = toolbar.findViewById(R.id.backBtn);
 
+        //initializing the custom activity dialog
+        dialog = new ActivityDialog(mContext);
+
+        //getting database root reference
+        mRootRef = FirebaseDatabase.getInstance().getReference();
     }
 
 
