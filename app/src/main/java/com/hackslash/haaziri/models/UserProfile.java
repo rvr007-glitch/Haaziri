@@ -1,10 +1,10 @@
 package com.hackslash.haaziri.models;
 
 public class UserProfile {
-    public String name;
-    public String email;
-    public String mobile;
-    public String userProfileImageUrl;
+    private String name;
+    private String email;
+    private String mobile;
+    private String userProfileImageUrl;
 
   public UserProfile(){
 

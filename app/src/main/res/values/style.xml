@@ -3,4 +3,22 @@
     <style name="LoginTextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
         <item name="boxStrokeColor">@color/text_input_box_stroke</item>
     </style>
+
+<!--    styles representing the input fields of profile edit activity-->
+    <style name="profile_textfield_layout_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginHorizontal">24dp</item>
+        <item name="android:layout_marginTop">30dp</item>
+        <item name="fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="profile_textfield_edit_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">57dp</item>
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:background">@drawable/round_corners</item>
+        <item name="fontFamily">@font/roboto</item>
+    </style>
 </resources>
