@@ -44,9 +44,11 @@ public class ProfileEditActivity extends AppCompatActivity {
     String email;
     String phone;
     String name;
-    Editable new_email;
-    Editable new_phone;
-    Editable new_name;
+
+    //These variable are now not required
+//    Editable new_email;
+//    Editable new_phone;
+//    Editable new_name;
     String id;
 
     private String userProfilePath;

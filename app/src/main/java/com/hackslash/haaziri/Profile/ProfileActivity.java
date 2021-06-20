@@ -30,12 +30,14 @@ public class ProfileActivity extends AppCompatActivity {
     private Context mContext = this;
 
 
-    LinearLayout logoutBtn;
-    ImageView backBtn;
+    //Remember to declare variables or view as private if they are to be only used in single activity
+    private LinearLayout logoutBtn;
+    private ImageView backBtn;
     //don't initialize your views here, initialize it in initVars function
-    TextView tname;
-    TextView temail;
-    TextView phno;
+    private TextView tname;
+    private TextView temail;
+    private TextView phno;
+    private ImageView editProfileBtn;
 
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
@@ -58,8 +60,15 @@ public class ProfileActivity extends AppCompatActivity {
         setupListeners();
         //separating UI creation to another function for more cleaner code and easy debugging
         updateUI();
-        getdata();
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //calling getdata to ensure that the updated data is always shown
+        getdata();
     }
 
     private void updateUI() {
@@ -77,10 +86,15 @@ public class ProfileActivity extends AppCompatActivity {
     private void setupListeners() {
         backBtn.setOnClickListener(v -> finish());
 
-        //NOTE; This is temporary implementation for logout button
         logoutBtn.setOnClickListener(v -> {
             logoutUser();
         });
+
+        editProfileBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, ProfileEditActivity.class);
+            startActivity(intent);
+                }
+        );
     }
 
     //function for logging user out
@@ -95,6 +109,12 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void getdata() {
+        //setting up progress dialog to let user know about data fetching operation
+        dialog.setTitle("Fetching Profile Data");
+        dialog.setMessage("Please wait while we fetch your profile data");
+        dialog.setCancelable(false);
+        dialog.showDialog();
+
         currentUser = mAuth.getCurrentUser();
         String userUid = currentUser.getUid();
         String userProfilePath = "/users/" + userUid + "/profile/";
@@ -136,12 +156,8 @@ public class ProfileActivity extends AppCompatActivity {
         tname = (TextView) findViewById(R.id.nameTv);
         temail = (TextView) findViewById(R.id.emailTv);
         phno = (TextView) findViewById(R.id.phoneTv);
+        editProfileBtn = findViewById(R.id.editProfileBtn);
 
-        //setting up progress dialog to let user know about data fetching operation
         dialog = new ActivityDialog(mContext);
-        dialog.setTitle("Fetching Profile Data");
-        dialog.setMessage("Please wait while we fetch your profile data");
-        dialog.setCancelable(false);
-        dialog.showDialog();
     }
 }
