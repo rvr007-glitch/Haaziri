@@ -1,5 +1,6 @@
 package com.hackslash.haaziri.Profile;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -15,7 +16,13 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.hackslash.haaziri.R;
+import com.hackslash.haaziri.activitydialog.ActivityDialog;
 import com.hackslash.haaziri.onboarding.LoginActivity;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -26,9 +33,16 @@ public class ProfileActivity extends AppCompatActivity {
     LinearLayout logoutBtn;
     ImageView backBtn;
     //don't initialize your views here, initialize it in initVars function
-   TextView tname;
-   TextView temail;
-   private FirebaseAuth mAuth;
+    TextView tname;
+    TextView temail;
+    TextView phno;
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
+    private DatabaseReference reference;
+
+    //creating a progress dialog to let user know about data fetching
+    private ActivityDialog dialog;
 
 
     @Override
@@ -44,13 +58,14 @@ public class ProfileActivity extends AppCompatActivity {
         setupListeners();
         //separating UI creation to another function for more cleaner code and easy debugging
         updateUI();
+        getdata();
 
     }
 
     private void updateUI() {
-        FirebaseUser user= mAuth.getCurrentUser();
-        if(user!=null) {
-            String name = (user.getDisplayName() != null ?user.getDisplayName():"Test User");
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            String name = (user.getDisplayName() != null ? user.getDisplayName() : "Test User");
             String email = user.getEmail();
             tname.setText(name);
             temail.setText(email);
@@ -79,6 +94,38 @@ public class ProfileActivity extends AppCompatActivity {
         finishAffinity();
     }
 
+    private void getdata() {
+        currentUser = mAuth.getCurrentUser();
+        String userUid = currentUser.getUid();
+        String userProfilePath = "/users/" + userUid + "/profile/";
+        reference = FirebaseDatabase.getInstance().getReference(userProfilePath);
+        reference.addListenerForSingleValueEvent(listener);
+
+    }
+
+    ValueEventListener listener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            dialog.hideDialog();
+            if (snapshot.exists()) {
+                String name = snapshot.child("name").getValue().toString();
+                String email = snapshot.child("email").getValue().toString();
+                String ph = snapshot.child("mobile").getValue().toString();
+                tname.setText(name);
+                temail.setText(email);
+                phno.setText(ph);
+            } else {
+                Toast.makeText(mContext, "No Record Found", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            dialog.hideDialog();
+            Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
+        }
+    };
+
     //function to initialize all the view, called from onCreate method
     private void initVars() {
         logoutBtn = findViewById(R.id.logout_btn);
@@ -86,7 +133,15 @@ public class ProfileActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         backBtn = toolbar.findViewById(R.id.backBtn);
         mAuth = FirebaseAuth.getInstance();
-        tname = findViewById(R.id.nameTv);
-        temail = findViewById(R.id.emailTv);
+        tname = (TextView) findViewById(R.id.nameTv);
+        temail = (TextView) findViewById(R.id.emailTv);
+        phno = (TextView) findViewById(R.id.phoneTv);
+
+        //setting up progress dialog to let user know about data fetching operation
+        dialog = new ActivityDialog(mContext);
+        dialog.setTitle("Fetching Profile Data");
+        dialog.setMessage("Please wait while we fetch your profile data");
+        dialog.setCancelable(false);
+        dialog.showDialog();
     }
 }
