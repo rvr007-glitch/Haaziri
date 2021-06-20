@@ -15,7 +15,7 @@
     <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">#A9A9A9</color>
     <color name="coral">#FF7F50</color>
 
-
+    <color name="home_status_bar_color">#5FEBD6</color>
 
 
 </resources>

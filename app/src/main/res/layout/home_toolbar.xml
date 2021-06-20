@@ -1,57 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <androidx.appcompat.widget.Toolbar
+    android:layout_height="160dp"
+    android:background="@drawable/rectangle_1"
+    >
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/toolbar"
-        android:background="@drawable/Rectangle_1"/>
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/img"
-            android:src="@drawable/Rectangle_2"
-            android:layout_marginLeft="349dp"
-            android:paddingTop="0dp"
-            android:layout_marginTop="235dp"/>
+        >
+<!--        <ImageView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:id="@+id/img"-->
+<!--            android:src="@drawable/rectangle_2"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            />-->
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/hitext"
+        android:id="@+id/toolbarUserText"
         android:text="Hi folk!"
+        android:fontFamily="@font/roboto"
         android:textColor="@color/black"
-        android:textSize="50sp"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="79dp"
+        android:textSize="32sp"
+        android:layout_marginLeft="28dp"
+        android:visibility="invisible"
         />
-    android:layout_marginTop="235dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/goodtext"
         android:text="Good Morning!"
         android:textColor="@color/DarkGrey"
-        android:textSize="24sp"
-        android:layout_marginTop="0dp"
-        android:layout_marginLeft="79dp"
-        android:layout_below="@+id/hitext"
+        android:fontFamily="@font/roboto"
+        android:textSize="18dp"
+        android:layout_marginLeft="28dp"
+        android:layout_below="@+id/toolbarUserText"
         />
     <ImageView
-        android:layout_width="90dp"
-        android:layout_height="100dp"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/pic"
-        android:layout_toRightOf="@+id/hitext"
-        android:layout_marginTop="44dp"
-        android:layout_marginLeft="50dp"
-        android:id="@+id/picview"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="32dp"
+        android:id="@+id/profileBtn"
         />
-
-
-
-
-
-
-
-
-</RelativeLayout>
+    </RelativeLayout>
+</androidx.appcompat.widget.Toolbar>

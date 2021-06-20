@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.hackslash.haaziri.Profile.ProfileActivity;
 import com.hackslash.haaziri.R;
 import com.hackslash.haaziri.activitydialog.ActivityDialog;
+import com.hackslash.haaziri.home.HomeScreenActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -105,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                             //checking the user verify his/her email or not
                             final FirebaseUser user =firebaseAuth.getCurrentUser();
                             if(user.isEmailVerified()){
-                                startActivity(new Intent(mContext, ProfileActivity.class));
+                                startActivity(new Intent(mContext, HomeScreenActivity.class));
                                 finish();
                             }
                             if(!user.isEmailVerified()){

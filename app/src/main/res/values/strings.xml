@@ -3,4 +3,7 @@
     <string name="next">next</string>
     <string name="skip">skip</string>
     <string name="start">start</string>
+    <string name="my_owned_te">My Owned Teams</string>
+    <string name="joined_teams">Joined Teams</string>
+    <string name="see_all">See all >></string>
 </resources>
