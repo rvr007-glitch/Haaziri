@@ -17,5 +17,7 @@
 
     <color name="home_status_bar_color">#5FEBD6</color>
 
+    <color name="button_blue">#3F51B5</color>
+
 
 </resources>

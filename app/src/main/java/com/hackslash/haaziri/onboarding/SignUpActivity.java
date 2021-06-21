@@ -32,6 +32,7 @@ import com.hackslash.haaziri.Profile.ProfileActivity;
 import com.hackslash.haaziri.R;
 import com.hackslash.haaziri.activitydialog.ActivityDialog;
 import com.hackslash.haaziri.models.UserProfile;
+import com.hackslash.haaziri.utils.MotionToastUtitls;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -118,7 +119,7 @@ public class SignUpActivity extends AppCompatActivity {
                 signupUser();
             }
             else{
-                Toast.makeText(mContext, "Make sure your password is of length greater than 6 and is a combination of letters and numbers", Toast.LENGTH_LONG).show();
+                MotionToastUtitls.showErrorToast(mContext, "Error", "Make sure your password is of length greater than 6 and is a combination of letters and numbers");
             }
 
         });
@@ -217,7 +218,7 @@ public class SignUpActivity extends AppCompatActivity {
                 //signing out user to prevent unintended access after sending verification email
                 mAuth.signOut();
                 dialog.hideDialog();
-                Toast.makeText(SignUpActivity.this, "Please verify your email first from the sent email", Toast.LENGTH_SHORT).show();
+                MotionToastUtitls.showSuccessToast(mContext, "Sign up succesful", "Your account has been created successfully now please verify your email to login");
                 finish();
             }
         });

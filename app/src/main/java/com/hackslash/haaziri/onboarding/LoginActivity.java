@@ -2,6 +2,8 @@ package com.hackslash.haaziri.onboarding;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +28,9 @@ import com.hackslash.haaziri.Profile.ProfileActivity;
 import com.hackslash.haaziri.R;
 import com.hackslash.haaziri.activitydialog.ActivityDialog;
 import com.hackslash.haaziri.home.HomeScreenActivity;
+import com.hackslash.haaziri.utils.MotionToastUtitls;
+
+import www.sanju.motiontoast.MotionToast;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -71,12 +76,12 @@ public class LoginActivity extends AppCompatActivity {
              //checking if email password are filled or empty
              if (TextUtils.isEmpty(email)) {
                  //setting empty email error to the email edit text field
-                 emailTxt.setError("Please enter an email");
+                 MotionToastUtitls.showErrorToast(mContext, "Error", "Please enter a valid email");
                  return;
              }
              if (TextUtils.isEmpty(password)) {
                  //setting empty password error to the password edit text field
-                 passwordTxt.setError("Please enter a password first");
+                 MotionToastUtitls.showErrorToast(mContext, "Error", "Please enter a valid password");
                  return;
 
              }
@@ -106,6 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                             //checking the user verify his/her email or not
                             final FirebaseUser user =firebaseAuth.getCurrentUser();
                             if(user.isEmailVerified()){
+                                MotionToastUtitls.showSuccessToast(mContext, "Welcome", "You are now logged in");
                                 startActivity(new Intent(mContext, HomeScreenActivity.class));
                                 finish();
                             }
@@ -117,14 +123,14 @@ public class LoginActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         dialog.hideDialog();
-                                        Toast.makeText(LoginActivity.this, "Verify your email from the sent email",Toast.LENGTH_SHORT).show();
+                                        MotionToastUtitls.showWarningDialog(mContext, "Warning", "Please verify your email first");
                                     }
                                 });
                             }
 
                         } else {
 
-                            Toast.makeText(LoginActivity.this, " Login Failed or User doesn't exists", Toast.LENGTH_SHORT).show();
+                            MotionToastUtitls.showInfoToast(mContext, "Info", "Invalid Credentials or user doesn't exists");
 
                         }
 
@@ -132,6 +138,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
 
     }
+
 
     private void sendToRegisterActivity() {
         Intent intent = new Intent(mContext, SignUpActivity.class);
