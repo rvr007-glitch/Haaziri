@@ -11,11 +11,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Haaziri">
-        <activity android:name=".Profile.ProfileEditActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity android:name=".sessions.CurrentSessionActivity"></activity>
+        <activity android:name=".teamhome.TeamHomeOwner" />
+        <activity android:name=".teamhome.TeamHomeGuest" />
+        <activity
+            android:name=".Profile.ProfileEditActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".home.HomeScreenActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".intro.IntroSliderActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
