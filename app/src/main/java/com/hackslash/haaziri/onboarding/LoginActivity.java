@@ -1,6 +1,7 @@
 package com.hackslash.haaziri.onboarding;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.res.ResourcesCompat;
@@ -90,7 +91,46 @@ public class LoginActivity extends AppCompatActivity {
              loginUser(email, password);
        });
         forgotPasswordBtn.setOnClickListener(v -> {
-          Toast.makeText(this, "forgot password clicked", Toast.LENGTH_SHORT).show();
+
+            final AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
+            View frgtnView = getLayoutInflater().inflate(R.layout.forgot_password_dialog,null);
+
+            final EditText forgotenEmail = (EditText)frgtnView.findViewById(R.id.forgetPasswordEmail);
+            Button btnForgotenPaswd =(Button)frgtnView.findViewById(R.id.forgetPasswordBtnEmail);
+
+            alert.setView(frgtnView);
+
+            final AlertDialog alertDialog = alert.create();
+            alertDialog.setCanceledOnTouchOutside(false);
+
+            btnForgotenPaswd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String resetEmail = forgotenEmail.getText().toString().trim();
+                    if(TextUtils.isEmpty(resetEmail)){
+                        MotionToastUtitls.showWarningDialog(mContext, "Warning", "Enter your registered email id");
+                        return;
+                    }
+                    firebaseAuth.sendPasswordResetEmail(resetEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()){
+                                MotionToastUtitls.showSuccessToast(mContext, "Email Sent", "We have sent you a reset link on your email");
+                            }
+                            else{
+                                MotionToastUtitls.showWarningDialog(mContext, "Check email", "Invalid Credentials or user doesn't exists");
+                            }
+                        }
+                    });
+
+                    alertDialog.dismiss();
+                }
+            });
+
+
+
+
+         alertDialog.show();
        });
        createOneBtn.setOnClickListener(v -> {
            sendToRegisterActivity();

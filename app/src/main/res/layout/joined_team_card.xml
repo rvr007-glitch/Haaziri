@@ -1,6 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="95dp"
+        android:background="#ffffff"
+        >
+        <androidx.cardview.widget.CardView
+            android:layout_width="357.87dp"
+            android:layout_height="80.66dp"
+            app:cardCornerRadius="15px"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:scaleType="centerCrop"
+                android:id="@+id/joinedTeamIcon"
+                android:background="@drawable/rectangle_201"
+                android:text="CS"
+                android:textColor="#ffffff"
+                android:textSize="25sp"
+                android:fontFamily="@font/roboto"
+                android:gravity="center"
+
+
+                />
+            <TextView
+                android:id="@+id/joinedTeamText"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginStart="95dp"
+                android:fontFamily="@font/roboto"
+                android:textSize="50px"
+                android:text="Introduction to programing"
+                android:gravity="top"
+                android:textColor="#444444"
+                android:layout_marginLeft="20dp"
+                />
+
+
+        </androidx.cardview.widget.CardView>
+
+
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
