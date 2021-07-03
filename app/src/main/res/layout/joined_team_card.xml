@@ -11,8 +11,9 @@
         <androidx.cardview.widget.CardView
             android:layout_width="357.87dp"
             android:layout_height="80.66dp"
-            app:cardCornerRadius="15px"
+            app:cardCornerRadius="15dp"
             android:layout_marginTop="20dp"
+            android:elevation="16dp"
             android:layout_marginLeft="20dp">
 
             <TextView
@@ -22,6 +23,7 @@
                 android:id="@+id/joinedTeamIcon"
                 android:background="@drawable/rectangle_201"
                 android:text="CS"
+                android:layout_gravity="center_vertical"
                 android:textColor="#ffffff"
                 android:textSize="25sp"
                 android:fontFamily="@font/roboto"
@@ -35,6 +37,7 @@
                 android:layout_height="35dp"
                 android:layout_marginStart="95dp"
                 android:fontFamily="@font/roboto"
+                android:layout_gravity="center_vertical"
                 android:textSize="50px"
                 android:text="Introduction to programing"
                 android:gravity="top"
