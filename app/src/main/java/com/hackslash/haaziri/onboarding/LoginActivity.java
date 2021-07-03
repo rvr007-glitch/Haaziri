@@ -1,6 +1,7 @@
 package com.hackslash.haaziri.onboarding;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.res.ResourcesCompat;
@@ -8,6 +9,7 @@ import androidx.core.content.res.ResourcesCompat;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -90,7 +93,52 @@ public class LoginActivity extends AppCompatActivity {
              loginUser(email, password);
        });
         forgotPasswordBtn.setOnClickListener(v -> {
-          Toast.makeText(this, "forgot password clicked", Toast.LENGTH_SHORT).show();
+
+            final AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
+            View frgtnView = getLayoutInflater().inflate(R.layout.forgot_password_dialog,null);
+
+            final EditText forgotenEmail = (EditText)frgtnView.findViewById(R.id.forgetPasswordEmail);
+            Button btnForgotenPaswd =(Button)frgtnView.findViewById(R.id.forgetPasswordBtnEmail);
+            final ProgressBar verificationEmailProgress = frgtnView.findViewById(R.id.verificationEmailProgress);
+            alert.setView(frgtnView);
+
+            final AlertDialog alertDialog = alert.create();
+            //setting transparent background for the alert dialog to view the curves in the custom layout
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            alertDialog.setCanceledOnTouchOutside(false);
+
+            btnForgotenPaswd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String resetEmail = forgotenEmail.getText().toString().trim();
+                    if(TextUtils.isEmpty(resetEmail)){
+                        MotionToastUtitls.showWarningDialog(mContext, "Warning", "Enter your registered email id");
+                        return;
+                    }
+                    //showing a progress bar for user to let them know about the ongoing process
+                    verificationEmailProgress.setVisibility(View.VISIBLE);
+                    firebaseAuth.sendPasswordResetEmail(resetEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()){
+                                MotionToastUtitls.showSuccessToast(mContext, "Email Sent", "We have sent you a reset link on your email");
+                                verificationEmailProgress.setVisibility(View.GONE);
+                                //dismissing the dialog once email is sent
+                                alertDialog.dismiss();
+                            }
+                            else{
+                                MotionToastUtitls.showErrorToast(mContext, "Check email", "Invalid Credentials or user doesn't exists");
+                                verificationEmailProgress.setVisibility(View.GONE);
+                            }
+                        }
+                    });
+                }
+            });
+
+
+
+
+         alertDialog.show();
        });
        createOneBtn.setOnClickListener(v -> {
            sendToRegisterActivity();
