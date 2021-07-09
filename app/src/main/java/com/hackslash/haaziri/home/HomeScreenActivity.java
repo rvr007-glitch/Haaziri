@@ -91,7 +91,8 @@ public class HomeScreenActivity extends AppCompatActivity {
             startActivity(intent);
         });
         addBtn.setOnClickListener(v -> {
-            Toast.makeText(mContext, "Add Team Button pressed", Toast.LENGTH_SHORT).show();
+            TeamDialogFragment df = new TeamDialogFragment();
+            getSupportFragmentManager().beginTransaction().add(df, "Dialog").commit();
         });
     }
 

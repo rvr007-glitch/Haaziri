@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".home.TeamDialogFragment"
+    app:cardCornerRadius="32dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="32dp">
+
+        <EditText
+            android:id="@+id/teamCodeEdit"
+            android:layout_width="match_parent"
+            android:inputType="textCapCharacters"
+            android:layout_height="wrap_content"
+            android:hint="Enter Team Code"/>
+
+        <Button
+            android:id="@+id/joinTeamBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_background"
+            android:textColor="@color/white"
+            android:text="Join Team"
+            android:layout_margin="16dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:gravity="center_horizontal"
+            android:text="OR"/>
+
+        <EditText
+            android:id="@+id/teamNameEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapCharacters"
+            android:layout_marginVertical="8dp"
+            android:hint="Enter Team Name"/>
+
+        <Button
+            android:id="@+id/createTeamBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_background"
+            android:paddingHorizontal="8dp"
+            android:textColor="@color/white"
+            android:text="Create New Team"
+            android:layout_margin="16dp"/>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
