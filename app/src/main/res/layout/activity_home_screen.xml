@@ -19,6 +19,7 @@
             android:layout_marginHorizontal="36dp"
             android:orientation="horizontal">
         <TextView
+            android:id="@+id/ownedTeamLabel"
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -49,6 +50,7 @@
             android:layout_height="wrap_content"/>
 
         <TextView
+            android:id="@+id/joinedTeamsLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/joined_teams"

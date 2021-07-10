@@ -30,6 +30,8 @@ import com.hackslash.haaziri.firebase.FirebaseVars;
 import com.hackslash.haaziri.models.Team;
 import com.hackslash.haaziri.utils.MotionToastUtitls;
 
+import java.util.HashMap;
+
 import javax.xml.XMLConstants;
 
 
@@ -113,13 +115,48 @@ public class TeamDialogFragment extends DialogFragment {
         progressDialog.setTitle("Team found, adding you");
         progressDialog.setMessage("We found your team, please hold on until we add you to the team");
         Team team = snapshot.getValue(Team.class);
+
+        //check if the user is already the owner of the team
         if (team.getTeamOwnerUid().equals(UID)){
             progressDialog.hideDialog();
             MotionToastUtitls.showInfoToast(getContext(), "Info", "You are already the owner of the team");
             return;
         }
 
-        progressDialog.hideDialog();
+        //check if user already exists in the member list of the team
+        if (snapshot.child("members").exists()){
+            for (DataSnapshot child: snapshot.child("members").getChildren()){
+                String id = child.getValue(String.class);
+                if (id.equals(UID)){
+                    progressDialog.hideDialog();
+                    MotionToastUtitls.showInfoToast(getContext(), "Info", "You are already a member of this team");
+                    return;
+                }
+            }
+        }
+
+        addUserToTeam(snapshot);
+    }
+
+    private void addUserToTeam(DataSnapshot snapshot) {
+        String teamCode = snapshot.child("teamCode").getValue(String.class);
+        FirebaseVars.mRootRef.child("/teams/"+teamCode+"/members/").push().setValue(UID).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                addTeamToUser(teamCode);
+            }
+        });
+    }
+
+    private void addTeamToUser(String teamCode) {
+        FirebaseVars.mRootRef.child("/users/"+UID+"/team/joined/").push().setValue(teamCode).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                progressDialog.hideDialog();
+                MotionToastUtitls.showSuccessToast(getContext(), "Your are in", "You have been successfully added to the team");
+                getDialog().dismiss();
+            }
+        });
     }
 
 

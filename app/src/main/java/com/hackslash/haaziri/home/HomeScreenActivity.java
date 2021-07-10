@@ -26,6 +26,7 @@ import com.hackslash.haaziri.Profile.ProfileActivity;
 import com.hackslash.haaziri.R;
 import com.hackslash.haaziri.activitydialog.ActivityDialog;
 import com.hackslash.haaziri.firebase.FirebaseVars;
+import com.hackslash.haaziri.models.Team;
 import com.hackslash.haaziri.models.UserProfile;
 
 public class HomeScreenActivity extends AppCompatActivity {
