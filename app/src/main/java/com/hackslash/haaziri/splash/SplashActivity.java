@@ -20,6 +20,7 @@ import com.hackslash.haaziri.firebase.FirebaseVars;
 import com.hackslash.haaziri.home.HomeScreenActivity;
 import com.hackslash.haaziri.intro.IntroSliderActivity;
 import com.hackslash.haaziri.onboarding.LoginActivity;
+import com.hackslash.haaziri.utils.MotionToastUtitls;
 
 import java.util.function.IntToDoubleFunction;
 
@@ -43,7 +44,7 @@ public class SplashActivity extends AppCompatActivity {
                 Intent splashIntent;
                 //checking if user has logged in previously
                 if(mAuth.getCurrentUser() != null) {
-                    Toast.makeText(mContext, "Already Logged in", Toast.LENGTH_SHORT).show();
+                    MotionToastUtitls.showSuccessToast(mContext, "Welcome back", "Glad to see you");
                     splashIntent = new Intent(mContext, HomeScreenActivity.class);
                 }
                 else
