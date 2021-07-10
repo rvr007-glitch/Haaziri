@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -29,6 +30,8 @@ import com.hackslash.haaziri.firebase.FirebaseVars;
 import com.hackslash.haaziri.models.Team;
 import com.hackslash.haaziri.models.UserProfile;
 
+import java.util.HashMap;
+
 public class HomeScreenActivity extends AppCompatActivity {
 
     private static final String TAG = "HomeScreenActivity";
@@ -39,6 +42,8 @@ public class HomeScreenActivity extends AppCompatActivity {
     private ImageButton addBtn;
     private TextView toolbarNameTv;
     private ActivityDialog dialog;
+    private TextView ownedTeamLabel;
+    private TextView joinedTeamLabel;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -61,10 +66,13 @@ public class HomeScreenActivity extends AppCompatActivity {
     }
 
     private void fetchData() {
-        if(FirebaseVars.mRootRef == null) return;
+        if (FirebaseVars.mRootRef == null) return;
+        dialog.setTitle("Fetching Details");
+        dialog.setMessage("Please wait while we fetch your details");
+        dialog.showDialog();
         String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        String path = "/users/"+UID+"/";
-        FirebaseVars.mRootRef.child(path).addListenerForSingleValueEvent(new ValueEventListener() {
+        String path = "/users/" + UID + "/";
+        FirebaseVars.mRootRef.child(path).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 //user data fetched successfully
@@ -72,8 +80,16 @@ public class HomeScreenActivity extends AppCompatActivity {
                 UserProfile currentUserProfile = snapshot.child("profile").getValue(UserProfile.class);
                 //getting user first name to show in toolbar
                 String firstName = currentUserProfile.getName().split(" ")[0];
-                toolbarNameTv.setText("Hi "+firstName+"!");
+                toolbarNameTv.setText("Hi " + firstName + "!");
                 toolbarNameTv.setVisibility(View.VISIBLE);
+                if (snapshot.child("/team/joined/").exists()) {
+                    long count = snapshot.child("/team/joined/").getChildrenCount();
+                    joinedTeamLabel.setText("Joined Teams (" + count + ")");
+                }
+                if (snapshot.child("/team/owned/").exists()) {
+                    long count = snapshot.child("/team/owned/").getChildrenCount();
+                    ownedTeamLabel.setText("My Owned Teams (" + count + ")");
+                }
             }
 
             @Override
@@ -104,9 +120,8 @@ public class HomeScreenActivity extends AppCompatActivity {
         profileBtn = toolbar.findViewById(R.id.profileBtn);
         toolbarNameTv = toolbar.findViewById(R.id.toolbarUserText);
         dialog = new ActivityDialog(mContext);
-        dialog.setTitle("Fetching Details");
-        dialog.setMessage("Please wait while we fetch your details");
         dialog.setCancelable(false);
-        dialog.showDialog();
+        ownedTeamLabel = findViewById(R.id.ownedTeamLabel);
+        joinedTeamLabel = findViewById(R.id.joinedTeamsLabel);
     }
 }

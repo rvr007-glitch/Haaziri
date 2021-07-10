@@ -15,6 +15,7 @@
 
         <EditText
             android:id="@+id/teamCodeEdit"
+            android:fontFamily="@font/roboto"
             android:layout_width="match_parent"
             android:inputType="textCapCharacters"
             android:layout_height="wrap_content"
@@ -23,6 +24,7 @@
         <Button
             android:id="@+id/joinTeamBtn"
             android:layout_width="match_parent"
+            android:fontFamily="@font/roboto"
             android:layout_height="wrap_content"
             android:background="@drawable/button_background"
             android:textColor="@color/white"
@@ -33,6 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="18sp"
+            android:fontFamily="@font/roboto"
             android:textColor="@color/black"
             android:gravity="center_horizontal"
             android:text="OR"/>
@@ -41,6 +44,7 @@
             android:id="@+id/teamNameEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto"
             android:inputType="textCapCharacters"
             android:layout_marginVertical="8dp"
             android:hint="Enter Team Name"/>
@@ -49,6 +53,7 @@
             android:id="@+id/createTeamBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto"
             android:background="@drawable/button_background"
             android:paddingHorizontal="8dp"
             android:textColor="@color/white"

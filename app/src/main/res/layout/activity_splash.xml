@@ -6,7 +6,7 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".splash.SplashActivity">
 <ImageView
-    android:id="@+id/imageView2"
+    android:id="@+id/splashLabel"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="false"
@@ -16,8 +16,8 @@ tools:context=".splash.SplashActivity">
     app:srcCompat="@drawable/hazzri" />
 
 <ImageView
-android:id="@+id/imageView"
-android:layout_width="294dp"
+    android:id="@+id/splashLogo"
+    android:layout_width="294dp"
 android:layout_height="317dp"
 android:layout_alignWithParentIfMissing="false"
 android:layout_marginTop="120dp"
