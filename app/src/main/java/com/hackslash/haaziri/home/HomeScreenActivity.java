@@ -4,13 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -21,16 +21,15 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.hackslash.haaziri.Profile.ProfileActivity;
 import com.hackslash.haaziri.R;
 import com.hackslash.haaziri.activitydialog.ActivityDialog;
 import com.hackslash.haaziri.firebase.FirebaseVars;
-import com.hackslash.haaziri.models.Team;
 import com.hackslash.haaziri.models.UserProfile;
+import com.hackslash.haaziri.utils.MotionToastUtitls;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class HomeScreenActivity extends AppCompatActivity {
 
@@ -44,6 +43,8 @@ public class HomeScreenActivity extends AppCompatActivity {
     private ActivityDialog dialog;
     private TextView ownedTeamLabel;
     private TextView joinedTeamLabel;
+    private ArrayList<String> joinedTeamsIds;
+    private RecyclerView joinedTeamsRecycler;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -85,6 +86,18 @@ public class HomeScreenActivity extends AppCompatActivity {
                 if (snapshot.child("/team/joined/").exists()) {
                     long count = snapshot.child("/team/joined/").getChildrenCount();
                     joinedTeamLabel.setText("Joined Teams (" + count + ")");
+                    joinedTeamsIds = new ArrayList<>();
+                    for (DataSnapshot teamId : snapshot.child("/team/joined" + "/").getChildren())
+                        joinedTeamsIds.add(teamId.getValue(String.class));
+                    JoinedTeamsAdapter adapter = new JoinedTeamsAdapter(joinedTeamsIds, mContext, new TeamClickInterface() {
+                        @Override
+                        public void onTeamClicked(String teamCode) {
+                            MotionToastUtitls.showInfoToast(mContext, "Info", "Team " + teamCode + " clicked!");
+                        }
+                    });
+                    joinedTeamsRecycler.setLayoutManager(new LinearLayoutManager(mContext));
+                    joinedTeamsRecycler.setAdapter(adapter);
+
                 }
                 if (snapshot.child("/team/owned/").exists()) {
                     long count = snapshot.child("/team/owned/").getChildrenCount();
@@ -123,5 +136,6 @@ public class HomeScreenActivity extends AppCompatActivity {
         dialog.setCancelable(false);
         ownedTeamLabel = findViewById(R.id.ownedTeamLabel);
         joinedTeamLabel = findViewById(R.id.joinedTeamsLabel);
+        joinedTeamsRecycler = findViewById(R.id.joined_team_recycler);
     }
 }
