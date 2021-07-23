@@ -45,6 +45,10 @@ public class HomeScreenActivity extends AppCompatActivity {
     private TextView joinedTeamLabel;
     private ArrayList<String> joinedTeamsIds;
     private RecyclerView joinedTeamsRecycler;
+    private RecyclerView ownedTeamsRecycler;
+    private ArrayList<String> ownedTeamsIds;
+    private JoinedTeamsAdapter joinedTeamsAdapter;
+    private OwnedTeamsAdapter ownedTeamsAdapter;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -86,22 +90,19 @@ public class HomeScreenActivity extends AppCompatActivity {
                 if (snapshot.child("/team/joined/").exists()) {
                     long count = snapshot.child("/team/joined/").getChildrenCount();
                     joinedTeamLabel.setText("Joined Teams (" + count + ")");
-                    joinedTeamsIds = new ArrayList<>();
+                    joinedTeamsIds.clear();
                     for (DataSnapshot teamId : snapshot.child("/team/joined" + "/").getChildren())
                         joinedTeamsIds.add(teamId.getValue(String.class));
-                    JoinedTeamsAdapter adapter = new JoinedTeamsAdapter(joinedTeamsIds, mContext, new TeamClickInterface() {
-                        @Override
-                        public void onTeamClicked(String teamCode) {
-                            MotionToastUtitls.showInfoToast(mContext, "Info", "Team " + teamCode + " clicked!");
-                        }
-                    });
-                    joinedTeamsRecycler.setLayoutManager(new LinearLayoutManager(mContext));
-                    joinedTeamsRecycler.setAdapter(adapter);
+                    joinedTeamsAdapter.notifyDataSetChanged();
 
                 }
                 if (snapshot.child("/team/owned/").exists()) {
                     long count = snapshot.child("/team/owned/").getChildrenCount();
                     ownedTeamLabel.setText("My Owned Teams (" + count + ")");
+                    ownedTeamsIds.clear();
+                    for (DataSnapshot teamId : snapshot.child("/team/owned" + "/").getChildren())
+                        ownedTeamsIds.add(teamId.getValue(String.class));
+                    ownedTeamsAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -137,5 +138,33 @@ public class HomeScreenActivity extends AppCompatActivity {
         ownedTeamLabel = findViewById(R.id.ownedTeamLabel);
         joinedTeamLabel = findViewById(R.id.joinedTeamsLabel);
         joinedTeamsRecycler = findViewById(R.id.joined_team_recycler);
+
+        ownedTeamsRecycler = findViewById(R.id.owned_team_recycler);
+        setupRecyclerViews();
+    }
+
+    private void setupRecyclerViews() {
+        //setting recycler views for joined teams
+        joinedTeamsIds = new ArrayList<>();
+        joinedTeamsAdapter = new JoinedTeamsAdapter(joinedTeamsIds, mContext, new TeamClickInterface() {
+            @Override
+            public void onTeamClicked(String teamCode) {
+                MotionToastUtitls.showInfoToast(mContext, "Info", teamCode);
+            }
+        });
+        joinedTeamsRecycler.setLayoutManager(new LinearLayoutManager(mContext));
+        joinedTeamsRecycler.setAdapter(joinedTeamsAdapter);
+
+
+        //setting recycler views for owned teams
+        ownedTeamsIds = new ArrayList<>();
+        ownedTeamsAdapter = new OwnedTeamsAdapter(ownedTeamsIds, mContext, new TeamClickInterface() {
+            @Override
+            public void onTeamClicked(String teamCode) {
+                MotionToastUtitls.showInfoToast(mContext, "Info", teamCode);
+            }
+        });
+        ownedTeamsRecycler.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
+        ownedTeamsRecycler.setAdapter(ownedTeamsAdapter);
     }
 }
