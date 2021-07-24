@@ -17,23 +17,23 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/pixeltv"
+            android:id="@+id/titleTv"
             android:text="PixelBytes"
             android:layout_toRightOf="@+id/backBtn"
             android:textSize="32sp"
             android:layout_marginLeft="12dp"
             android:textColor="@color/DarkGrey"
             />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/sessiontv"
-            android:layout_below="@+id/pixeltv"
-            android:layout_alignStart="@id/pixeltv"
+            android:layout_below="@+id/titleTv"
+            android:layout_alignStart="@id/titleTv"
             android:text="Session Going on"
             android:textSize="18sp"
-            android:textColor="@color/black"
-            />
+            android:textColor="@color/black" />
 
 
     </RelativeLayout>

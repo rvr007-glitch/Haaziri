@@ -27,6 +27,9 @@ import com.hackslash.haaziri.R;
 import com.hackslash.haaziri.activitydialog.ActivityDialog;
 import com.hackslash.haaziri.firebase.FirebaseVars;
 import com.hackslash.haaziri.models.UserProfile;
+import com.hackslash.haaziri.teamhome.TeamHomeGuest;
+import com.hackslash.haaziri.teamhome.TeamHomeOwner;
+import com.hackslash.haaziri.utils.Constants;
 import com.hackslash.haaziri.utils.MotionToastUtitls;
 
 import java.util.ArrayList;
@@ -149,7 +152,9 @@ public class HomeScreenActivity extends AppCompatActivity {
         joinedTeamsAdapter = new JoinedTeamsAdapter(joinedTeamsIds, mContext, new TeamClickInterface() {
             @Override
             public void onTeamClicked(String teamCode) {
-                MotionToastUtitls.showInfoToast(mContext, "Info", teamCode);
+                Intent intent = new Intent(mContext, TeamHomeGuest.class);
+                intent.putExtra(Constants.TEAM_CODE_KEY, teamCode);
+                startActivity(intent);
             }
         });
         joinedTeamsRecycler.setLayoutManager(new LinearLayoutManager(mContext));
@@ -161,7 +166,9 @@ public class HomeScreenActivity extends AppCompatActivity {
         ownedTeamsAdapter = new OwnedTeamsAdapter(ownedTeamsIds, mContext, new TeamClickInterface() {
             @Override
             public void onTeamClicked(String teamCode) {
-                MotionToastUtitls.showInfoToast(mContext, "Info", teamCode);
+                Intent intent = new Intent(mContext, TeamHomeOwner.class);
+                intent.putExtra(Constants.TEAM_CODE_KEY, teamCode);
+                startActivity(intent);
             }
         });
         ownedTeamsRecycler.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
