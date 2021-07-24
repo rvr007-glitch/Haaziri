@@ -1,6 +1,7 @@
 package com.hackslash.haaziri.sessions;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
@@ -8,8 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,7 +24,9 @@ import com.google.android.gms.tasks.Task;
 import com.hackslash.haaziri.R;
 import com.hackslash.haaziri.activitydialog.ActivityDialog;
 import com.hackslash.haaziri.firebase.FirebaseVars;
+import com.hackslash.haaziri.intro.PrefManager;
 import com.hackslash.haaziri.utils.Constants;
+import com.hackslash.haaziri.utils.MotionToastUtitls;
 
 public class CurrentSessionActivity extends AppCompatActivity {
 
@@ -69,12 +74,42 @@ public class CurrentSessionActivity extends AppCompatActivity {
     }
 
     private void closeSession() {
+        AlertDialog alertDialog = new AlertDialog.Builder(mContext)
+                .setTitle("Close session?")
+                .setMessage("Are you sure to close the sesssion")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    proceedToClose();
+                })
+                .setNegativeButton("No", (dialog, which) -> {
+
+                })
+                .setCancelable(false)
+                .create();
+        alertDialog.show();
+
+    }
+
+    private void proceedToClose() {
         dialog.setTitle("Stopping session");
         dialog.setMessage("Please wait while we wrap up your session and save the details");
         dialog.showDialog();
         //turning off bluetooth
         final BluetoothManager manager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         BluetoothAdapter bluetoothAdapter = manager.getAdapter();
+        PrefManager prefManager = new PrefManager(mContext);
+        Handler nameChangeHandler = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                bluetoothAdapter.setName(prefManager.getOriginalBluetoothName());
+                if (bluetoothAdapter.getName().equals(prefManager.getOriginalBluetoothName())) {
+                    prefManager.close();
+                } else {
+                    nameChangeHandler.postDelayed(this, 100);
+                }
+            }
+        };
+        nameChangeHandler.postDelayed(runnable, 100);
         bluetoothAdapter.disable();
         //stopping session from backend by removing id
         FirebaseVars.mRootRef.child("/teams/" + teamCode + "/currentSessionId/").setValue("").addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -84,7 +119,6 @@ public class CurrentSessionActivity extends AppCompatActivity {
                 finish();
             }
         });
-        finish();
     }
 
     private void initVars() {
@@ -97,4 +131,11 @@ public class CurrentSessionActivity extends AppCompatActivity {
         dialog.setCancelable(false);
 
     }
+
+    @Override
+    protected void onStop() {
+        closeSession();
+        super.onStop();
+    }
+
 }

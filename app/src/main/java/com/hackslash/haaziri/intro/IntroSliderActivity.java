@@ -1,5 +1,6 @@
 package com.hackslash.haaziri.intro;
 
+import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -40,7 +41,12 @@ public class IntroSliderActivity extends AppCompatActivity {
 
         // Checking for first time app launch - before calling setContentView()
         prefManager = new PrefManager(this);
+        if (prefManager.getOriginalBluetoothName().isEmpty()) {
+            final BluetoothManager manager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
+            prefManager.setOriginalBluetoothName(manager.getAdapter().getName());
+        }
         if (!prefManager.isFirstTimeLaunch()) {
+            prefManager.close();
             launchLoginScreen();
             finish();
         }

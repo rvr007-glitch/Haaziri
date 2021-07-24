@@ -6,4 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".teamhome.TeamHomeGuest">
 
+
+    <!-- TODO: update this button as per your convenience-->
+    <!-- It has been implemented for now as for testing purposes-->
+    <Button
+        android:id="@+id/giveHaaziriBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="Give Haaziri"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

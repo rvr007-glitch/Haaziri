@@ -17,8 +17,12 @@
         <activity
             android:name=".sessions.CurrentSessionActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".teamhome.TeamHomeOwner" />
-        <activity android:name=".teamhome.TeamHomeGuest" />
+        <activity
+            android:name=".teamhome.TeamHomeOwner"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".teamhome.TeamHomeGuest"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".Profile.ProfileEditActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
