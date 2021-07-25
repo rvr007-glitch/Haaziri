@@ -132,10 +132,4 @@ public class CurrentSessionActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onStop() {
-        closeSession();
-        super.onStop();
-    }
-
 }

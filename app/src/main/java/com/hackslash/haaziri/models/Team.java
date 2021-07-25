@@ -4,7 +4,6 @@ public class Team {
     String teamName;
     String teamCode;
     String teamOwnerUid;
-    String bluetoothId;
     String currentSessionId;
 
     public Team(){}
@@ -13,7 +12,6 @@ public class Team {
         this.teamName = teamName;
         this.teamCode = teamCode;
         this.teamOwnerUid = teamOwnerUid;
-        bluetoothId = "";
         currentSessionId = "";
     }
 
@@ -23,14 +21,6 @@ public class Team {
 
     public void setTeamOwnerUid(String teamOwnerUid) {
         this.teamOwnerUid = teamOwnerUid;
-    }
-
-    public String getBluetoothId() {
-        return bluetoothId;
-    }
-
-    public void setBluetoothId(String bluetoothId) {
-        this.bluetoothId = bluetoothId;
     }
 
     public String getCurrentSessionId() {

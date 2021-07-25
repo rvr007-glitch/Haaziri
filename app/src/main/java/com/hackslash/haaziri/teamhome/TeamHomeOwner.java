@@ -1,6 +1,7 @@
 package com.hackslash.haaziri.teamhome;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothAdapter;
@@ -91,9 +92,28 @@ public class TeamHomeOwner extends AppCompatActivity {
             dialog.setTitle("Setting up new session");
             dialog.setMessage("Please wait while we setup new session");
             dialog.showDialog();
-            setupBluetooth();
+            makeDeviceDiscoverable();
+
 
         });
+    }
+
+    private void makeDeviceDiscoverable() {
+        int requestCode = 1;
+        Intent discoverableIntent =
+                new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+        startActivityForResult(discoverableIntent, requestCode);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == 1) {
+            if (resultCode != RESULT_CANCELED) {
+                setupBluetooth();
+            } else dialog.hideDialog();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void setupBluetooth() {
@@ -114,6 +134,7 @@ public class TeamHomeOwner extends AppCompatActivity {
                 }
             }
         }, 500);
+        bluetoothAdapter.enable();
 
     }
 
