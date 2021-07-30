@@ -17,6 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Haaziri">
         <activity
+            android:name=".teamhome.OwnerRecentSessionsActivity"
+            android:exported="true" />
+        <activity
             android:name=".sessions.CurrentSessionActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
