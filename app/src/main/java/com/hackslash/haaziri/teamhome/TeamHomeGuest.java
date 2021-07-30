@@ -2,7 +2,10 @@ package com.hackslash.haaziri.teamhome;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -10,6 +13,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.util.Log;
@@ -34,10 +38,13 @@ import com.hackslash.haaziri.utils.Constants;
 import com.hackslash.haaziri.utils.MotionToastUtitls;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class TeamHomeGuest extends AppCompatActivity {
 
     private static final String TAG = "TeamHomeGuest";
+    private final int ACCESS_COARSE_LOCATION_REQUEST_CODE = 101;
+    private final int ACCESS_FINE_LOCATION_REQUEST_CODE = 102;
 
     private Button giveHaaziriBtn;
     private String teamCode = "";
@@ -61,8 +68,7 @@ public class TeamHomeGuest extends AppCompatActivity {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice foundDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                nearbyDevices.add(foundDevice.getName());
-                searchForHost();
+                searchForHost(foundDevice.getName());
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 if (!found) {
                     dialog.hideDialog();
@@ -126,14 +132,35 @@ public class TeamHomeGuest extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == ACCESS_COARSE_LOCATION_REQUEST_CODE || requestCode == ACCESS_FINE_LOCATION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                checkPermissions();
+            } else {
+                MotionToastUtitls.showErrorToast(mContext, "Error", "These permissions are required for making haaziri");
+            }
+        }
+    }
+
     private void setupListeners() {
         giveHaaziriBtn.setOnClickListener(v -> {
             if (currentSessionId == null || currentSessionId.isEmpty()) {
                 MotionToastUtitls.showInfoToast(mContext, "No session going on", "Currently no session is going on");
             } else {
-                proceedToHaazari();
+                checkPermissions();
             }
         });
+    }
+
+    private void checkPermissions() {
+        if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(TeamHomeGuest.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, ACCESS_COARSE_LOCATION_REQUEST_CODE);
+        else if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(TeamHomeGuest.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESS_FINE_LOCATION_REQUEST_CODE);
+        else
+            proceedToHaazari();
     }
 
     private void proceedToHaazari() {
@@ -163,8 +190,10 @@ public class TeamHomeGuest extends AppCompatActivity {
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    private void searchForHost() {
-        if (nearbyDevices.contains(currentSessionId) && !found) {
+    private void searchForHost(String name) {
+        String[] temp = name.split(" ");
+        ArrayList<String> nameSplit = new ArrayList<>(Arrays.asList(temp));
+        if (nameSplit.contains(currentSessionId) && !found) {
             found = true;
 
             //save the haaziri in database
