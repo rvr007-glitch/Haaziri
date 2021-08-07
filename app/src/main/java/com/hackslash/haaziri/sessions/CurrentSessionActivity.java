@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.TextViewCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.bluetooth.BluetoothAdapter;
@@ -13,6 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,14 +24,26 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.hackslash.haaziri.R;
 import com.hackslash.haaziri.activitydialog.ActivityDialog;
 import com.hackslash.haaziri.firebase.FirebaseVars;
+import com.hackslash.haaziri.home.JoinedTeamsAdapter;
+import com.hackslash.haaziri.home.OwnedTeamsAdapter;
+import com.hackslash.haaziri.home.TeamClickInterface;
 import com.hackslash.haaziri.intro.PrefManager;
+import com.hackslash.haaziri.teamhome.TeamHomeGuest;
+import com.hackslash.haaziri.teamhome.TeamHomeOwner;
 import com.hackslash.haaziri.utils.Constants;
 import com.hackslash.haaziri.utils.MotionToastUtitls;
 
+import java.util.ArrayList;
+
 public class CurrentSessionActivity extends AppCompatActivity {
+
+    private static final String TAG="CurrentSessionActivity";
 
     private Toolbar toolbar;
     private Button stopBtn;
@@ -38,9 +53,11 @@ public class CurrentSessionActivity extends AppCompatActivity {
     private String teamCode = "";
     private String teamName = "";
     private String sessionId = "";
+    private ArrayList<String> AttendeesIds;
 
     private ActivityDialog dialog;
     private Context mContext = this;
+    private AttendeeAdapter AttendeeAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +83,8 @@ public class CurrentSessionActivity extends AppCompatActivity {
         initVars();
 
         setupListeners();
+
+        setupRecyclerViews();
     }
 
     private void setupListeners() {
@@ -129,6 +148,15 @@ public class CurrentSessionActivity extends AppCompatActivity {
         backBtn = toolbar.findViewById(R.id.backBtn);
         dialog = new ActivityDialog(mContext);
         dialog.setCancelable(false);
+
+    }
+
+    private void setupRecyclerViews() {
+
+        AttendeeAdapter = new AttendeeAdapter( mContext,teamCode,sessionId);
+
+        attendenceRecycler.setLayoutManager(new LinearLayoutManager(mContext));
+        attendenceRecycler.setAdapter(AttendeeAdapter);
 
     }
 
