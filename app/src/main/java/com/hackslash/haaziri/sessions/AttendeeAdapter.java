@@ -23,19 +23,19 @@ import com.hackslash.haaziri.firebase.FirebaseVars;
 import com.hackslash.haaziri.models.Team;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AttendeeAdapter extends RecyclerView.Adapter<AttendeeAdapter.ViewHolder> {
     private static final String TAG="AttendeeAdapter";
     private final Context mContext;
-    private String teamCode;
-    private String sessionId;
+
+    private ArrayList<SessionAttendee> attendeeIds;
 
 
-    public AttendeeAdapter( Context mContext,String teamCode,String sessionId) {
-
+    public AttendeeAdapter(  ArrayList<SessionAttendee> attendeeIds,Context mContext) {
+        this.attendeeIds=attendeeIds;
         this.mContext = mContext;
-        this.teamCode=teamCode;
-        this.sessionId=sessionId;
+
     }
 
     @NonNull
@@ -48,13 +48,16 @@ public class AttendeeAdapter extends RecyclerView.Adapter<AttendeeAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull AttendeeAdapter.ViewHolder holder, int position) {
 
-        //here we are calling the fetch method the for current position method to get the team details from firebase
-        holder.fetchAttendeeData(teamCode,sessionId);
+
+             for(SessionAttendee sp:attendeeIds){
+              holder.setData(sp);
+             }
     }
 
     @Override
-    public int getItemCount() {
-        return 0;
+    public int getItemCount( ) {
+
+        return  attendeeIds.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -73,23 +76,7 @@ public class AttendeeAdapter extends RecyclerView.Adapter<AttendeeAdapter.ViewHo
 
         }
 
-        public void fetchAttendeeData(String teamCode,String sessionId) {
 
-            FirebaseVars.mRootRef.child("/teams/"+teamCode+ "/sessions/"+sessionId+"/attendees/" ).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    //as we get the team object from firebase we populate the details in the UI,
-                    if (snapshot.exists())
-                        for(DataSnapshot snapshot1:snapshot.getChildren())
-                        setData(snapshot1.getValue(SessionAttendee.class));
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.d(TAG, error.getMessage());
-                }
-            });
-        }
 
         private void setData(SessionAttendee value) {
 

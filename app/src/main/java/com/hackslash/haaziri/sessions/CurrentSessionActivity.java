@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.widget.TextViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,6 +35,7 @@ import com.hackslash.haaziri.home.JoinedTeamsAdapter;
 import com.hackslash.haaziri.home.OwnedTeamsAdapter;
 import com.hackslash.haaziri.home.TeamClickInterface;
 import com.hackslash.haaziri.intro.PrefManager;
+import com.hackslash.haaziri.models.SessionAttendee;
 import com.hackslash.haaziri.teamhome.TeamHomeGuest;
 import com.hackslash.haaziri.teamhome.TeamHomeOwner;
 import com.hackslash.haaziri.utils.Constants;
@@ -58,6 +60,11 @@ public class CurrentSessionActivity extends AppCompatActivity {
     private ActivityDialog dialog;
     private Context mContext = this;
     private AttendeeAdapter AttendeeAdapter;
+    private ImageView userImg;
+    private ImageView icon;
+    private TextView attendeeName;
+    private CardView attendeeCardview;
+    private ArrayList<SessionAttendee>attendeeIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +90,7 @@ public class CurrentSessionActivity extends AppCompatActivity {
         initVars();
 
         setupListeners();
-
+        fetchAttendeeData();
         setupRecyclerViews();
     }
 
@@ -148,16 +155,43 @@ public class CurrentSessionActivity extends AppCompatActivity {
         backBtn = toolbar.findViewById(R.id.backBtn);
         dialog = new ActivityDialog(mContext);
         dialog.setCancelable(false);
+        userImg = findViewById(R.id.userimg);
+        icon = findViewById(R.id.ticktv);
+        attendeeName = findViewById(R.id.attendeename);
+        attendeeCardview = findViewById(R.id.attendeecardview);
 
+    }
+    public void fetchAttendeeData() {
+
+        FirebaseVars.mRootRef.child("/teams/"+teamCode+ "/sessions/"+sessionId+"/attendees/" ).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //as we get the team object from firebase we populate the details in the UI,
+                if (snapshot.exists()) {
+                    for (DataSnapshot snapshot1 : snapshot.getChildren())
+                        attendeeIds.add(snapshot1.getValue(SessionAttendee.class));
+
+
+                    AttendeeAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, error.getMessage());
+            }
+        });
     }
 
     private void setupRecyclerViews() {
+        attendeeIds = new ArrayList<>();
 
-        AttendeeAdapter = new AttendeeAdapter( mContext,teamCode,sessionId);
+        AttendeeAdapter = new AttendeeAdapter(attendeeIds,mContext);
 
         attendenceRecycler.setLayoutManager(new LinearLayoutManager(mContext));
         attendenceRecycler.setAdapter(AttendeeAdapter);
 
     }
+
 
 }
