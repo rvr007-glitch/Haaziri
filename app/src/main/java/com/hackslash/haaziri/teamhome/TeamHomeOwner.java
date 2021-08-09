@@ -3,6 +3,7 @@ package com.hackslash.haaziri.teamhome;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothAssignedNumbers;
@@ -14,6 +15,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +47,9 @@ public class TeamHomeOwner extends AppCompatActivity {
     private String oldName = "My phone";
     private Team selectedTeam;
     private String teamPath = "";
+    private TextView teamNameTv;
+    private TextView recentSessionLabel;
+    private ImageView backBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +80,7 @@ public class TeamHomeOwner extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 selectedTeam = snapshot.getValue(Team.class);
+                teamNameTv.setText(selectedTeam.getTeamName());
                 dialog.hideDialog();
             }
 
@@ -96,6 +102,7 @@ public class TeamHomeOwner extends AppCompatActivity {
 
 
         });
+        backBtn.setOnClickListener(v -> finish());
     }
 
     private void makeDeviceDiscoverable() {
@@ -189,7 +196,11 @@ public class TeamHomeOwner extends AppCompatActivity {
         teamCodeTv = findViewById(R.id.teamCodeTv);
         teamCodeTv.setText("Team Code: " + teamCode);
         takeHaaziriBtn = findViewById(R.id.takeHaaziriBtn);
-
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        teamNameTv = toolbar.findViewById(R.id.teamNameTv);
+        backBtn = toolbar.findViewById(R.id.backBtn);
+        recentSessionLabel = toolbar.findViewById(R.id.recentSessionsLabel);
+        recentSessionLabel.setText("Team Members");
         dialog = new ActivityDialog(mContext);
         dialog.setCancelable(false);
     }
