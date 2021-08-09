@@ -47,11 +47,7 @@ public class AttendeeAdapter extends RecyclerView.Adapter<AttendeeAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull AttendeeAdapter.ViewHolder holder, int position) {
-
-
-             for(SessionAttendee sp:attendeeIds){
-              holder.setData(sp);
-             }
+             holder.setData(attendeeIds.get(position));
     }
 
     @Override

@@ -5,14 +5,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
-import androidx.core.widget.TextViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +19,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -31,13 +28,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.hackslash.haaziri.R;
 import com.hackslash.haaziri.activitydialog.ActivityDialog;
 import com.hackslash.haaziri.firebase.FirebaseVars;
-import com.hackslash.haaziri.home.JoinedTeamsAdapter;
-import com.hackslash.haaziri.home.OwnedTeamsAdapter;
-import com.hackslash.haaziri.home.TeamClickInterface;
 import com.hackslash.haaziri.intro.PrefManager;
 import com.hackslash.haaziri.models.SessionAttendee;
-import com.hackslash.haaziri.teamhome.TeamHomeGuest;
-import com.hackslash.haaziri.teamhome.TeamHomeOwner;
 import com.hackslash.haaziri.utils.Constants;
 import com.hackslash.haaziri.utils.MotionToastUtitls;
 
@@ -59,12 +51,12 @@ public class CurrentSessionActivity extends AppCompatActivity {
 
     private ActivityDialog dialog;
     private Context mContext = this;
-    private AttendeeAdapter AttendeeAdapter;
+    private AttendeeAdapter attendeeAdapter;
     private ImageView userImg;
     private ImageView icon;
     private TextView attendeeName;
     private CardView attendeeCardview;
-    private ArrayList<SessionAttendee>attendeeIds;
+    private ArrayList<SessionAttendee> attendeeIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +82,8 @@ public class CurrentSessionActivity extends AppCompatActivity {
         initVars();
 
         setupListeners();
-        fetchAttendeeData();
         setupRecyclerViews();
+        fetchAttendeeData();
     }
 
     private void setupListeners() {
@@ -168,11 +160,14 @@ public class CurrentSessionActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 //as we get the team object from firebase we populate the details in the UI,
                 if (snapshot.exists()) {
-                    for (DataSnapshot snapshot1 : snapshot.getChildren())
-                        attendeeIds.add(snapshot1.getValue(SessionAttendee.class));
-
-
-                    AttendeeAdapter.notifyDataSetChanged();
+                    attendeeIds.clear();
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                        SessionAttendee attendee = snapshot1.getValue(SessionAttendee.class);
+                        MotionToastUtitls.showSuccessToast(mContext, "Present", attendee.getName() + " Present");
+                        attendeeIds.add(attendee);
+                    }
+                    //TODO: This is disabled temporarily because of crash
+//                    attendeeAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -186,10 +181,10 @@ public class CurrentSessionActivity extends AppCompatActivity {
     private void setupRecyclerViews() {
         attendeeIds = new ArrayList<>();
 
-        AttendeeAdapter = new AttendeeAdapter(attendeeIds,mContext);
+        attendeeAdapter = new AttendeeAdapter(attendeeIds, mContext);
 
         attendenceRecycler.setLayoutManager(new LinearLayoutManager(mContext));
-        attendenceRecycler.setAdapter(AttendeeAdapter);
+        attendenceRecycler.setAdapter(attendeeAdapter);
 
     }
 
