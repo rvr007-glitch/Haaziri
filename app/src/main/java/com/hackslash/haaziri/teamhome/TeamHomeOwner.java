@@ -42,6 +42,7 @@ public class TeamHomeOwner extends AppCompatActivity {
     private TextView teamCodeTv;
     private String teamCode = "";
     private Button takeHaaziriBtn;
+    private TextView recentSessionsBtn;
     private Context mContext = this;
     private ActivityDialog dialog;
     private String oldName = "My phone";
@@ -103,6 +104,12 @@ public class TeamHomeOwner extends AppCompatActivity {
 
         });
         backBtn.setOnClickListener(v -> finish());
+        recentSessionsBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, OwnerRecentSessionsActivity.class);
+            intent.putExtra(Constants.TEAM_NAME_KEY, teamNameTv.getText().toString());
+            intent.putExtra(Constants.TEAM_CODE_KEY, teamCode);
+            startActivity(intent);
+        });
     }
 
     private void makeDeviceDiscoverable() {
@@ -201,6 +208,7 @@ public class TeamHomeOwner extends AppCompatActivity {
         backBtn = toolbar.findViewById(R.id.backBtn);
         recentSessionLabel = toolbar.findViewById(R.id.recentSessionsLabel);
         recentSessionLabel.setText("Team Members");
+        recentSessionsBtn = findViewById(R.id.recentActivityBtn);
         dialog = new ActivityDialog(mContext);
         dialog.setCancelable(false);
     }
