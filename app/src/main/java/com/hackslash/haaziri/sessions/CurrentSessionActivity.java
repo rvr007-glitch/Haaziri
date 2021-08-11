@@ -16,8 +16,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -57,6 +59,9 @@ public class CurrentSessionActivity extends AppCompatActivity {
     private TextView attendeeName;
     private CardView attendeeCardview;
     private ArrayList<SessionAttendee> attendeeIds;
+    private ArrayList<String> attendeeNames;
+    private ArrayAdapter<String> adapter;
+    private ListView attendeeListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,6 +156,7 @@ public class CurrentSessionActivity extends AppCompatActivity {
         icon = findViewById(R.id.ticktv);
         attendeeName = findViewById(R.id.attendeename);
         attendeeCardview = findViewById(R.id.attendeecardview);
+        attendeeListView = findViewById(R.id.attendeeListView);
 
     }
     public void fetchAttendeeData() {
@@ -161,11 +167,14 @@ public class CurrentSessionActivity extends AppCompatActivity {
                 //as we get the team object from firebase we populate the details in the UI,
                 if (snapshot.exists()) {
                     attendeeIds.clear();
+                    attendeeNames.clear();
                     for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                         SessionAttendee attendee = snapshot1.getValue(SessionAttendee.class);
                         MotionToastUtitls.showSuccessToast(mContext, "Present", attendee.getName() + " Present");
                         attendeeIds.add(attendee);
+                        attendeeNames.add(attendee.getName());
                     }
+                    adapter.notifyDataSetChanged();
                     //TODO: This is disabled temporarily because of crash
 //                    attendeeAdapter.notifyDataSetChanged();
                 }
@@ -180,11 +189,16 @@ public class CurrentSessionActivity extends AppCompatActivity {
 
     private void setupRecyclerViews() {
         attendeeIds = new ArrayList<>();
+        attendeeNames = new ArrayList<>();
 
-        attendeeAdapter = new AttendeeAdapter(attendeeIds, mContext);
+        adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, attendeeNames);
+        attendeeListView.setAdapter(adapter);
 
-        attendenceRecycler.setLayoutManager(new LinearLayoutManager(mContext));
-        attendenceRecycler.setAdapter(attendeeAdapter);
+//        attendeeAdapter = new AttendeeAdapter(attendeeIds, mContext);
+//
+//        attendenceRecycler.setLayoutManager(new LinearLayoutManager(mContext));
+//        attendenceRecycler.setAdapter(attendeeAdapter);
+
 
     }
 

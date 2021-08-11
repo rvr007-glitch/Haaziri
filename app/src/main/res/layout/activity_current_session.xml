@@ -35,20 +35,24 @@
         android:textColor="@color/DarkGrey"
         android:textSize="18sp"
         android:layout_marginTop="20dp"
-        android:layout_marginHorizontal="24dp"
-        />
+        android:layout_marginHorizontal="24dp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/attendance_recyclerview"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sesstxtv"
         android:layout_marginTop="12dp"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="24dp"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@+id/attendeeListView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sesstxtv"/>
-
-
-
-
+        android:layout_below="@+id/sesstxtv"
+        android:layout_margin="8dp" />
 
 
 </RelativeLayout>
